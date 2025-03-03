@@ -1,0 +1,345 @@
+.hed{
+    background-color: black !important;
+    color: white; 
+    padding: 20px;
+}
+
+.bigfont
+    {
+        font-size: large;
+        color:rgb(219, 105, 122);
+        background-color: antiquewhite;
+        font-weight: 600;
+    }
+
+    .bg-color{
+
+        background-color: rgb(22, 23, 37);
+    
+    }
+
+    .btn-cus{
+        
+        color:antiquewhite;   
+        font-size: large;
+        font-weight: 500;
+        
+    }
+
+    .algn{
+        
+        text-align: start;
+    
+    }
+
+    a{
+        display: inline-block;
+    }
+
+
+
+
+/* ////////////////////////////////////////////////// */
+
+
+
+
+/* General layout */
+/* General layout */
+/* General layout */
+/* General layout */
+/* General layout */
+html, body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color:brown;
+    color: #333;
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    padding: 0 !important;
+    margin: 0;
+    max-width: 100% !important;
+    max-height: 100% !important;
+}
+
+.left-panel {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 20px;
+    min-width: 40%;
+    /* background-clip: padding-box;
+    box-shadow: inset 0 0 10px #ff0000; */
+
+}
+
+.right-panel {
+    
+    background-color: #333;
+    width: 20%;
+    /* padding-top: 15px; */
+    border-right: 1px solid #ccc; /* Lighter border for subtle look */
+    display: flex;
+    flex-direction: column;
+    /* gap: 15px; */
+    min-width: 10px !important;
+}
+
+.graph-placeholder {
+    width: 90%;
+    height: 80%;
+    border: 2px dashed #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 16px;
+    color:#ddd;
+}
+
+/* Table header styling */
+/* .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #222;
+    color: white;
+    padding: 10px 15px;
+    border-bottom: 1px solid #888; 
+}
+
+.table-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.table-header button {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
+    background-color: #444;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.table-header button:hover {
+    background-color: white;
+    color: #444;
+} */
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #222;
+    color: white;
+    padding: 8px 12px;
+    border-bottom: 1px solid #888;
+    font-size: 12px;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px; /*Space between buttons*/
+}
+
+/* Make buttons smaller */
+.header-controls button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px;
+}
+
+.header-controls button:hover {
+    color: #ddd;
+}
+
+/* Adjust volume container */
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Reduce slider size */
+#volumeSlider {
+    width: 80px !important;
+    height: 4px;
+    cursor: pointer;
+    
+}
+
+/* Table styling */
+.tbl {
+    width: 100%;
+    overflow-x: auto;
+    margin: 0;
+
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background-color: #333;
+    color: #ddd;
+}
+
+thead {
+    background-color: #222;
+    color: white;
+}
+
+th, td {
+    padding: 4px 6px;
+    font-size: 17.5px;
+    line-height: 1.5;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* background-color: #333; */
+}
+
+th {
+    background-color: #222222;
+}
+
+tr {
+    border-bottom: 0.5px solid #222;
+    /* background-color: #333; */
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tr:hover {
+    /* background-color: #111 !important; */
+    background-color: rgba(20, 20, 20, 0.2) !important;
+}
+
+.resizer {
+    width: 5px;
+    background: #333;
+    cursor: ew-resize; /* Indicates horizontal resizing */
+    position: relative;
+}
+
+.column-resizer {
+    width: 9px;
+    height: 100%;
+    cursor: ew-resize; /* Horizontal resize cursor */
+    background-color: #666;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.resizable {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+}
+
+.context-menu {
+    position: absolute;
+    text-align: center;
+    background: lightgray;
+    border: 1px solid black;
+}
+
+.context-menu ul {
+    padding: 0px;
+    margin: 0px;
+    min-width: 150px;
+    list-style: none;
+}
+
+.context-menu ul li {
+    padding-bottom: 7px;
+    padding-top: 7px;
+    border: 1px solid black;
+}
+
+.context-menu ul li a {
+    text-decoration: none;
+    color: black;
+}
+
+.context-menu ul li:hover {
+    background: darkgray;
+}
+
+.color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 5px;
+}
+
+.color-option {
+    width: 25px;
+    height: 25px;
+    border: 1px solid #ccc; /* Slight border for contrast */
+    cursor: pointer;
+    outline: none;
+}
+
+.color-option:hover {
+    border: 2px solid black; /* Highlight selection on hover */
+}
+
+.highlighted {
+    outline: 3px solid yellow !important; /* Thick white border */
+    border-radius: 5px; /* Slightly rounded corners for a clean look */
+}
+
+#toggleSound {
+    font-size: 20px;  /* Increase text & icon size */
+    padding: 12px 20px;  /* Increase padding for a larger button */
+    border-radius: 8px;  /* Rounded edges for a modern look */
+    cursor: pointer;
+    display: flex; /* Ensure proper alignment */
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between icon and text */
+}
+
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#toggleSound {
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#volumeSlider {
+    width: 100px;
+    cursor: pointer;
+}

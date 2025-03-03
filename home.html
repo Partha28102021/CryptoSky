@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Scanner</title>
+    <link rel="stylesheet" href="mystyle.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <script src="data.js" defer></script>
+    <script src="variables.js" defer></script>
+    <script src="myapp.obf.js" defer></script>
+    <style>
+        /* General Styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling on the entire page */
+        }
+
+        /* Container for Chart and Table */
+        .container {
+            display: flex;
+            height: 100vh; /* Full viewport height */
+        }
+
+        /* Left Panel (Chart) */
+        .left-panel {
+            flex: 1; /* Take remaining space */
+            height: 100%;
+            overflow: hidden; /* Prevent chart from stretching */
+        }
+
+        /* Resizer between Chart and Table */
+        .resizer {
+            width: 5px;
+            background-color: #333;
+            cursor: ew-resize; /* Resize cursor */
+        }
+
+        /* Right Panel (Table and Calculator) */
+        .right-panel {
+            width: 400px; /* Fixed width for the right panel */
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background-color: #E6E6FA; /* Light Purple background */
+        }
+
+        /* Table Header */
+        .table-header {
+            padding: 10px;
+            background-color: #F5F5F5; /* Light Grey background */
+            border-bottom: 1px solid #333;
+            height: 50px; /* Adjust height as needed */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Header Text Color */
+        .table-header h6 {
+            color: #000000; /* Black text color */
+        }
+
+        /* Header Controls (Buttons) */
+        .header-controls button {
+            color: #000000; /* Black text color for buttons */
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Slider Container */
+        .slider-container {
+            width: 100%; /* Span the entire width */
+            padding: 10px;
+            background-color: #F5F5F5; /* Light Grey background */
+            border-bottom: 1px solid #333;
+            height: 20px; /* Adjust height as needed */
+            display: flex;
+            align-items: center;
+        }
+
+        /* Volume Slider */
+        #volumeSlider {
+            width: 100%; /* Span the entire width of the container */
+            height: 10px; /* Adjust height as needed */
+            background: #333; /* Slider track color */
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            -webkit-appearance: none; /* Remove default styling */
+            margin: 0; /* Remove default margin */
+            flex: 1; /* Ensure it takes up all available space */
+        }
+
+        #volumeSlider:hover {
+            opacity: 1; /* Fully opaque on hover */
+        }
+
+        /* Custom Slider Thumb */
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Remove default styling */
+            appearance: none;
+            width: 20px; /* Thumb width */
+            height: 20px; /* Thumb height */
+            background: #007bff; /* Thumb color */
+            cursor: pointer;
+            border-radius: 50%; /* Circular thumb */
+        }
+
+        #volumeSlider::-moz-range-thumb {
+            width: 20px; /* Thumb width */
+            height: 20px; /* Thumb height */
+            background: #007bff; /* Thumb color */
+            cursor: pointer;
+            border-radius: 50%; /* Circular thumb */
+        }
+
+        /* Table Container */
+        .table-container {
+            flex: 1; /* Take remaining space in the right panel */
+            overflow-y: auto; /* Enable vertical scrolling */
+            border: 1px solid #333;
+            background-color: #E6E6FA; /* Light Purple background */
+        }
+
+        /* Table Styling */
+        #coinTable {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #E6E6FA; /* Light Purple background */
+        }
+
+        #coinTable th, #coinTable td {
+            padding: 10px;
+            border: 1px solid #444;
+            text-align: left;
+            color: #333; /* Dark text for readability */
+        }
+
+        #coinTable th {
+            background-color: #D8BFD8; /* Slightly darker purple for headers */
+            color: #333; /* Dark text for readability */
+        }
+
+        /* Scrollable Container for Risk Calculator */
+        .calculator-scrollable {
+            max-height: 70vh; /* Adjust height as needed */
+            overflow-y: auto; /* Enable vertical scrollbar */
+            padding: 10px; /* Add some padding */
+            border: 1px solid #444; /* Optional: Add a border */
+            border-radius: 10px; /* Optional: Add rounded corners */
+        }
+
+        /* Risk Calculator Styles */
+        .calculator {
+            max-width: 800px;
+            margin: 0 auto; /* Center the calculator */
+            padding: 20px; /* Reduce padding for better fit */
+            border: 1px solid #333;
+            border-radius: 20px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            transform: scale(0.75); /* Scale down to 75% */
+            transform-origin: top center; /* Ensure scaling starts from the top */
+        }
+
+        .calculator h2 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 28px;
+        }
+
+        .calculator input {
+            width: 100%;
+            padding: 16px;
+            margin: 20px 0;
+            box-sizing: border-box;
+            background-color: #333;
+            border: 1px solid #444;
+            color: #ffffff;
+            font-size: 24px;
+        }
+
+        .calculator button {
+            width: 100%;
+            padding: 20px;
+            background-color: #007bff;
+            color: #FF8C00;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .calculator button:hover {
+            background-color: #0056b3;
+        }
+
+        .calculator .result {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            color: #00BFFF;
+            font-size: 24px;
+        }
+
+        .calculator .result h3 {
+            color: #00FF00;
+            font-size: 32px;
+        }
+
+        .calculator .result p {
+            color: #00BFFF;
+        }
+
+        .calculator .result strong {
+            color: #FF8C00;
+            margin-right: 10px;
+        }
+
+        .calculator .trade-type {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .calculator .trade-type button {
+            width: 48%;
+            padding: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 24px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+
+        .calculator .trade-type button.selected {
+            color: white;
+        }
+
+        .calculator .trade-type button#buyButton.selected {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .calculator .trade-type button#sellButton.selected {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .calculator .capital-required {
+            color: #00FF00; /* Green by default */
+        }
+
+        .calculator .capital-required.insufficient {
+            color: #FF0000; /* Red if insufficient */
+        }
+
+        .calculator label[for="entryPrice"] {
+            color: #00FF00; /* Green for Entry Price */
+            font-size: 28.8px; /* 20% larger than 24px */
+        }
+
+        .calculator label[for="stopLoss"] {
+            color: #FF0000; /* Red for Stop Loss */
+            font-size: 28.8px; /* 20% larger than 24px */
+        }
+
+        .calculator label:not([for="entryPrice"]):not([for="stopLoss"]) {
+            font-size: 28.8px; /* 20% larger than 24px */
+        }
+
+        .calculator label[for="maxLeverage"] {
+            font-size: 24px; /* Slightly smaller than the heading */
+        }
+
+        .calculator label[for="maxLeverage"] span {
+            color: #888; /* Dark grey for description */
+            font-size: 20px; /* Smaller font size for description */
+        }
+
+        .calculator .risk-percentage {
+            font-size: 20px; /* Smaller font size */
+            color: #00FF00; /* Green color */
+            margin-left: 10px; /* Spacing from the label */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel (Chart) -->
+        <div class="left-panel">
+            <div id="chartContainer" style="height:100%;width:100%">
+                <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+                    <div class="tradingview-widget-copyright">
+                        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
+                            <span class="blue-text">Track all markets on TradingView</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resizer -->
+        <div class="resizer"></div>
+
+        <!-- Right Panel (Table and Calculator) -->
+        <div class="right-panel">
+            <div class="table-header">
+                <h6 id="tableTitle">High Vol</h6>
+                <div class="header-controls">
+                    <button id="toggleAutoDisplay" title="Toggle Auto Display">
+                        <i class="bi bi-play-circle"></i>
+                    </button>
+                    <div class="volume-container">
+                        <button id="toggleSound" title="Toggle Sound">
+                            <i id="soundIcon" class="bi bi-volume-up"></i>
+                        </button>
+                    </div>
+                    <button id="toggleTable" title="Toggle Table View">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <button id="toggleRiskCalculator" title="Toggle Risk Calculator">
+                        <i class="bi bi-calculator"></i> Risk Calculator
+                    </button>
+                </div>
+            </div>
+
+            <!-- New Block for Volume Slider -->
+            <div class="slider-container">
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-container">
+                <table id="coinTable">
+                    <thead>
+                        <tr>
+                            <th><div class="resizable"><span>Name</span><div class="column-resizer"></div></div></th>
+                            <th><div class="resizable"><span>Timestamp</span><div class="column-resizer"></div></div></th>
+                            <th><div class="resizable"><span>Last Volume</span><div class="column-resizer"></div></div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Risk Calculator Container -->
+            <div id="riskCalculatorContainer" style="display: none;">
+                <div class="calculator-scrollable">
+                    <div class="calculator">
+                        <h2>Crypto Position Sizing Calculator for CoinDcx</h2>
+                        <label for="riskInr">Risk in INR:</label>
+                        <input type="number" id="riskInr" placeholder="Enter risk in INR" value="200">
+                        <label for="capitalUsdt">Available Capital (In USDT): <span id="riskPercentage" class="risk-percentage"></span></label>
+                        <input type="number" id="capitalUsdt" placeholder="Enter available capital in USDT">
+                        <label for="maxLeverage">Max Leverage <span>(Given in CoinDCX platform - Use less leverage to get far liquidation price, so stop loss can be big)</span>:</label>
+                        <input type="number" id="maxLeverage" placeholder="Enter max leverage">
+                        <label for="entryPrice">Entry Price (USDT):</label>
+                        <input type="number" id="entryPrice" step="0.0000001" placeholder="Enter entry price">
+                        <label for="stopLoss">Stop Loss Price (USDT):</label>
+                        <input type="number" id="stopLoss" step="0.0000001" placeholder="Enter stop loss price">
+                        <label for="rrRatio">Risk-to-Reward Ratio (e.g., 2 for 1:2):</label>
+                        <input type="number" id="rrRatio" placeholder="Enter RR ratio (e.g., 2)" value="2">
+                        <div class="trade-type">
+                            <button id="buyButton" onclick="selectTradeType('buy')">Buy</button>
+                            <button id="sellButton" onclick="selectTradeType('sell')">Sell</button>
+                        </div>
+                        <button onclick="calculatePosition()">Calculate Position</button>
+                        <div class="result" id="result">
+                            <!-- Results will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Scanner App -->
+    <script>
+        // Toggle Table View on Double Click
+        const toggleTableButton = document.getElementById('toggleTable');
+        toggleTableButton.addEventListener('dblclick', () => {
+            // Your logic to toggle the table view
+            console.log('Table view toggled (double-click)');
+        });
+
+        // Toggle the Risk Calculator container
+        const toggleRiskCalculatorButton = document.getElementById('toggleRiskCalculator');
+        const riskCalculatorContainer = document.getElementById('riskCalculatorContainer');
+
+        // Load the saved state from local storage
+        const isRiskCalculatorOpen = localStorage.getItem('isRiskCalculatorOpen') === 'true';
+        if (isRiskCalculatorOpen) {
+            riskCalculatorContainer.style.display = 'block';
+        }
+
+        // Toggle visibility and save state
+        toggleRiskCalculatorButton.addEventListener('click', () => {
+            const isVisible = riskCalculatorContainer.style.display === 'block';
+            riskCalculatorContainer.style.display = isVisible ? 'none' : 'block';
+            localStorage.setItem('isRiskCalculatorOpen', !isVisible);
+        });
+
+        // Minimize Risk Calculator when clicking outside of it
+        document.addEventListener('click', (event) => {
+            const isClickInsideCalculator = riskCalculatorContainer.contains(event.target);
+            const isClickOnToggleButton = toggleRiskCalculatorButton.contains(event.target);
+
+            // If the click is outside the calculator and not on the toggle button, minimize it
+            if (!isClickInsideCalculator && !isClickOnToggleButton && riskCalculatorContainer.style.display === 'block') {
+                riskCalculatorContainer.style.display = 'none';
+                localStorage.setItem('isRiskCalculatorOpen', false);
+            }
+        });
+
+        // Risk Calculator Logic
+        let tradeType = 'buy'; // Default trade type is 'buy'
+
+        // Function to select trade type (Buy/Sell)
+        function selectTradeType(type) {
+            tradeType = type;
+            const buyButton = document.getElementById('buyButton');
+            const sellButton = document.getElementById('sellButton');
+
+            if (type === 'buy') {
+                buyButton.classList.add('selected');
+                sellButton.classList.remove('selected');
+            } else {
+                sellButton.classList.add('selected');
+                buyButton.classList.remove('selected');
+            }
+        }
+
+        // Function to calculate position size
+        function calculatePosition() {
+            // Get input values
+            const riskInr = parseFloat(document.getElementById('riskInr').value);
+            const capitalUsdt = parseFloat(document.getElementById('capitalUsdt').value);
+            const maxLeverage = parseFloat(document.getElementById('maxLeverage').value);
+            const entryPrice = parseFloat(document.getElementById('entryPrice').value);
+            const stopLoss = parseFloat(document.getElementById('stopLoss').value);
+            const rrRatio = parseFloat(document.getElementById('rrRatio').value);
+
+            // Constants
+            const usdtToInr = 87.43; // 1 USDT = 87.43 INR (updated conversion rate)
+
+            // Calculate risk in USDT
+            const riskUsdt = riskInr / usdtToInr;
+
+            // Calculate price difference (risk)
+            const priceDifference = Math.abs(entryPrice - stopLoss);
+
+            // Calculate position size in tokens
+            const positionSizeTokens = riskUsdt / priceDifference;
+
+            // Calculate position size in USDT
+            const positionSizeUsdt = positionSizeTokens * entryPrice;
+
+            // Calculate required capital based on max leverage
+            const requiredCapital = positionSizeUsdt / maxLeverage;
+
+            // Check if capital is sufficient (including equality case)
+            const isCapitalSufficient = capitalUsdt >= requiredCapital;
+
+            // Calculate profit-taking price based on RR ratio
+            let takeProfitPrice;
+            if (tradeType === 'buy') {
+                takeProfitPrice = entryPrice + (priceDifference * rrRatio); // Buy: Entry + (RR × Risk)
+            } else {
+                takeProfitPrice = entryPrice - (priceDifference * rrRatio); // Sell: Entry - (RR × Risk)
+            }
+
+            // Determine decimal precision for take profit price
+            const entryDecimalPlaces = (entryPrice.toString().split('.')[1] || '').length;
+            const stopLossDecimalPlaces = (stopLoss.toString().split('.')[1] || '').length;
+            const maxDecimalPlaces = Math.max(entryDecimalPlaces, stopLossDecimalPlaces);
+
+            // Display results
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <h3>Results:</h3>
+                <p><strong>Trade Type:</strong> ${tradeType === 'buy' ? 'Buy' : 'Sell'}</p>
+                <p><strong>Position Size (Tokens) (Approx):</strong> ${positionSizeTokens.toFixed(2)}</p>
+                <p><strong>Position Size (USDT) (Approx):</strong> ${positionSizeUsdt.toFixed(2)} USDT</p>
+                <p><strong>Required Capital:</strong> <span class="capital-required ${isCapitalSufficient ? '' : 'insufficient'}">${requiredCapital.toFixed(2)} USDT</span></p>
+                <p><strong>Take Profit Price:</strong> ${takeProfitPrice.toFixed(maxDecimalPlaces)} USDT</p>
+            `;
+        }
+
+        // Function to calculate and display risk percentage
+        function updateRiskPercentage() {
+            const riskInr = parseFloat(document.getElementById('riskInr').value);
+            const capitalUsdt = parseFloat(document.getElementById('capitalUsdt').value);
+            const usdtToInr = 87.43; // 1 USDT = 87.43 INR (updated conversion rate)
+
+            if (riskInr && capitalUsdt) {
+                const riskUsdt = riskInr / usdtToInr;
+                const riskPercentage = (riskUsdt / capitalUsdt) * 100;
+                document.getElementById('riskPercentage').textContent = `(${riskPercentage.toFixed(2)}% Risk)`;
+            } else {
+                document.getElementById('riskPercentage').textContent = '';
+            }
+        }
+
+        // Add event listeners for input fields
+        document.getElementById('riskInr').addEventListener('input', updateRiskPercentage);
+        document.getElementById('capitalUsdt').addEventListener('input', updateRiskPercentage);
+
+        // Function to move cursor to the next input field on pressing Enter
+        function moveToNextField(currentInput) {
+            const inputs = Array.from(document.querySelectorAll('.calculator input'));
+            const currentIndex = inputs.indexOf(currentInput);
+
+            if (currentIndex < inputs.length - 1) {
+                inputs[currentIndex + 1].focus(); // Move to the next input field
+            }
+        }
+
+        // Add event listeners to all input fields in the calculator
+        const calculatorInputs = document.querySelectorAll('.calculator input');
+        calculatorInputs.forEach(input => {
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent form submission (if any)
+                    moveToNextField(event.target); // Move to the next input field
+                }
+            });
+        });
+    </script>
+</body>
+</html>
