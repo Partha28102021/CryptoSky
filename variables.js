@@ -1,7 +1,7 @@
 const config = {
-    multiplier: 10             ,
+    multiplier: 1           ,
     candles: 1500              ,
-    threshold: 30000000        ,
+    threshold: 300        ,
     interval: "15"
 };
 
